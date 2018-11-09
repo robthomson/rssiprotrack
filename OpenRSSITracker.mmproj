@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mm_project current="1" serial_port="COM32" programmer="" board="Arduino Pro or Pro Mini (5V, 16 MHz) w/ ATmega328" includePaths=";$(LIBRARIES)/LiquidCrystal;$(LIBRARIES)/LiquidCrystal/src;$(LIBRARIES)/Servo;$(LIBRARIES)/Servo/src;$(LIBRARIES)/Servo/src/avr;$(LIBRARIES)/Servo/src/sam;$(LIBRARIES)/EEPROM;$(LIBRARIES)/Wire;$(LIBRARIES)/Wire/utility" libPaths="" srcPaths="" libs="" useCodeAutomation="0" linkPrintfVersion="1" serialPortSpeed="9600" isLibrary="0">
+    <files>
+        <file name="OpenRSSITracker_main.cpp" open="yes"/>
+        <file name="openrssitracker_main.h" open="yes"/>
+        <file name="LCD.cpp" open="no"/>
+        <file name="SimpleTimer.cpp" open="no"/>
+        <file name="AnalogKeyPad.cpp" open="yes"/>
+        <file name="LiquidCrystal.cpp" open="no"/>
+        <file name="LiquidCrystal_I2C.cpp" open="no"/>
+        <file name="LiquidCrystal_SR.cpp" open="no"/>
+        <file name="LiquidCrystal_SR2W.cpp" open="no"/>
+        <file name="LiquidCrystal_SR3W.cpp" open="no"/>
+        <file name="FastIO.cpp" open="no"/>
+        <file name="I2CIO.cpp" open="no"/>
+    </files>
+    <externals>
+        <external name="Servo/Servo.cpp" open="no"/>
+        <external name="Servo/Servo.h" open="no"/>
+        <external name="EEPROM/EEPROM.cpp" open="no"/>
+        <external name="EEPROM/EEPROM.h" open="no"/>
+        <external name="Wire/utility/twi.c" open="no"/>
+        <external name="Wire/utility/twi.h" open="no"/>
+        <external name="Wire/Wire.cpp" open="no"/>
+        <external name="Wire/Wire.h" open="no"/>
+    </externals>
+</mm_project>
