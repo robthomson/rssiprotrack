@@ -2,10 +2,10 @@
 <mm_project current="1" serial_port="COM32" programmer="" board="Arduino Pro or Pro Mini (5V, 16 MHz) w/ ATmega328" includePaths=";$(LIBRARIES)/LiquidCrystal;$(LIBRARIES)/LiquidCrystal/src;$(LIBRARIES)/Servo;$(LIBRARIES)/Servo/src;$(LIBRARIES)/Servo/src/avr;$(LIBRARIES)/Servo/src/sam;$(LIBRARIES)/EEPROM;$(LIBRARIES)/Wire;$(LIBRARIES)/Wire/utility" libPaths="" srcPaths="" libs="" useCodeAutomation="0" linkPrintfVersion="1" serialPortSpeed="9600" isLibrary="0">
     <files>
         <file name="OpenRSSITracker_main.cpp" open="yes"/>
-        <file name="openrssitracker_main.h" open="yes"/>
+        <file name="openrssitracker_main.h" open="no"/>
         <file name="LCD.cpp" open="no"/>
         <file name="SimpleTimer.cpp" open="no"/>
-        <file name="AnalogKeyPad.cpp" open="yes"/>
+        <file name="AnalogKeyPad.cpp" open="no"/>
         <file name="LiquidCrystal.cpp" open="no"/>
         <file name="LiquidCrystal_I2C.cpp" open="no"/>
         <file name="LiquidCrystal_SR.cpp" open="no"/>

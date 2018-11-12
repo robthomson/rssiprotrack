@@ -74,7 +74,7 @@ int doSeekTmp;
 int switchVideo1 = 0;
 int switchVideo2 = 0;
 int avSource=1;
-
+int isLegacyDiversity=0;
 
 
 double kalman_q= 0.05;    // 0.05 do not tamper with this value unless you are looking for adventure ;-)
@@ -152,6 +152,8 @@ void setup() {
 	  } 
 	  
 	
+	  
+	  
 	
 	lcd.begin(16,2);
 	lcd.backlight();
@@ -257,6 +259,13 @@ void setup() {
 
 	lcd.clear();
 
+	//check if old or new style diversity.
+	analogRead(PIN_RSSI3); // Fake read to let ADC settle
+	rssiTopRaw = analogRead(PIN_RSSI3);
+	if(rssiTopRaw < 10){
+			isLegacyDiversity=1;
+	}
+
 
 
 	updateVoltage();
@@ -349,30 +358,33 @@ void track(){
 				rssiMid = constrain(rssiMid,0,100);
 				rssiTop = constrain(rssiTop,0,100);				
 				
-				int raw_avrssiDiff = rssiTop > rssiMid ? rssiTop- rssiMid : rssiMid - rssiTop;
+				if(isLegacyDiversity == 0){		//only do this if we are in new rssi mode
+					
+						int raw_avrssiDiff = rssiTop > rssiMid ? rssiTop- rssiMid : rssiMid - rssiTop;
 
-				//if diffference large enough - then swap.
-				//to be determined if the difference var would benifit from a wider value.
-				if(raw_avrssiDiff > 2){  //run the switching code. 
-						if(rssiMid > rssiTop){  //set signal to front antenna
-								digitalWrite(PIN_AVSWITCH1, HIGH);
-								digitalWrite(PIN_AVSWITCH2, LOW);
-								switchVideo1 = 0;	
-								avSource=1;
-								lcd.setCursor(10,1);
-								lcd.print("RX1");	
-								
-						} 	
-						if(rssiTop > rssiMid){ //set signal to top antenna
-								digitalWrite(PIN_AVSWITCH1, LOW);
-								digitalWrite(PIN_AVSWITCH2, HIGH);
-								switchVideo2 = 0;
-								avSource=2;
-								lcd.setCursor(10,1);
-								lcd.print("RX2");						
-						}						
-				}	
-
+						//if diffference large enough - then swap.
+						//to be determined if the difference var would benifit from a wider value.
+						if(raw_avrssiDiff > 2){  //run the switching code. 
+								if(rssiMid > rssiTop){  //set signal to front antenna
+										digitalWrite(PIN_AVSWITCH1, HIGH);
+										digitalWrite(PIN_AVSWITCH2, LOW);
+										switchVideo1 = 0;	
+										avSource=1;
+										lcd.setCursor(10,1);
+										lcd.print("RX1");	
+										
+								} 	
+								if(rssiTop > rssiMid){ //set signal to top antenna
+										digitalWrite(PIN_AVSWITCH1, LOW);
+										digitalWrite(PIN_AVSWITCH2, HIGH);
+										switchVideo2 = 0;
+										avSource=2;
+										lcd.setCursor(10,1);
+										lcd.print("RX2");						
+								}						
+						}	
+						
+				}
 	
 				//tracking diff check
 				int raw_rssiDiff = rssiLeft > rssiRight ? rssiLeft - rssiRight : rssiRight - rssiLeft;
@@ -546,7 +558,7 @@ void calibrateLow(){
 				EEPROM_writeAnything(EPPROM_LOWMID, lowMid);
 				EEPROM_writeAnything(EPPROM_LOWTOP, lowTop);
 				
-				
+				/*
 				//clear status line
 				lcd.setCursor(0, 1);
 				lcd.print("L ");	
@@ -566,7 +578,7 @@ void calibrateLow(){
 				lcd.print(lowTop);	
 				lcd.print("              ");		
 				delay(2000);				
-				
+				*/
 				
 				lcd.setCursor(0, 1);
 				lcd.print("              ");
@@ -682,7 +694,7 @@ void calibrateHigh(){
 				EEPROM_writeAnything(EPPROM_HIGHMID, highMid);
 				EEPROM_writeAnything(EPPROM_HIGHTOP, highTop);
 				
-				
+				/*
 				//clear status line
 				lcd.setCursor(0, 1);
 				lcd.print("L ");	
@@ -703,9 +715,11 @@ void calibrateHigh(){
 				lcd.print("              ");		
 				delay(2000);				
 				
-				
+								*/
+								
 				lcd.setCursor(0, 1);
 				lcd.print("              ");
+
 
 				changeState(STATE_MENU);
 
@@ -967,7 +981,9 @@ void menu(){
 								switchMenuLoc(MENU_ADVANCED_DIRECTION);
 							}
 							if(localKey == BTN_DOWN){
-								switchMenuLoc(MENU_ADVANCED_KALMANAV);
+									if(isLegacyDiversity == 0){  //we dont show last menu if legacy mode enabled
+										switchMenuLoc(MENU_ADVANCED_KALMANAV);
+									}	
 							}
 							if(localKey == BTN_SEL){
 								menuSelectArrow();
