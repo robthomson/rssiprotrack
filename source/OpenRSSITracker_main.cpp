@@ -77,6 +77,7 @@ int avSource=1;
 int isLegacyDiversity=0;
 
 
+
 double kalman_q= 0.05;    // 0.05 do not tamper with this value unless you are looking for adventure ;-)
 double kalman_r= 150;	  // default:150   this gets over-ridden by epprom retrieved value
 
