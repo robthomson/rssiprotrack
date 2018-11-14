@@ -94,7 +94,6 @@
 #define STR_MENU_DIRECTION "REVERSE SERVO   "
 #define STR_EXIT_TRACKING "STOP TRACKING"
 #define STR_MENU_SETSPEED "SET SPEED   "
-#define STR_MENU_SEEKSPEED "SEEK SPEED       "
 #define STR_MENU_CENTERHOLD "CENTER HOLD   "
 #define STR_MENU_KALMAN "FILTER        "
 #define STR_MENU_KALMANAV "AV FILTER    "
@@ -111,7 +110,7 @@
 #define STR_MENU_ADVANCED_SERVOCENTERR "> SERVO CENTER R"
 #define STR_MENU_ADVANCED_DIRECTION "> SERVO REVERSE"
 #define STR_MENU_ADVANCED_VOLTAGE "> VOLTAGE ALARM"
-#define STR_MENU_ADVANCED_SEEKSPEED "> SEEK SPEED      "
+
 
 //location in which we store information in the epprom
 #define EPPROM_FORMAT 0
@@ -137,8 +136,8 @@
 #define EPPROM_HIGHRIGHT 210
 #define EPPROM_HIGHMID 220
 #define EPPROM_HIGHTOP 230
-#define EPPROM_SEEKSPEED 240
 #define EPPROM_KALMANAV 250
+
 
 
 //system state switch values
@@ -161,7 +160,6 @@
 #define MENU_ADVANCED_DIRECTION 36
 #define MENU_ADVANCED_VOLTAGE 37
 #define MENU_ADVANCED_KALMANAV 38
-
 
  
 //-------------------------------------------------------------------
@@ -209,7 +207,6 @@ void menuSetSpeed();
 void menuBrowseChannel();
 void menuScanChannel();
 void menuSetChannel();
-void menuSeekSpeed();
 void menu();
 void lowRSSIBeep();
 void rssiStats();

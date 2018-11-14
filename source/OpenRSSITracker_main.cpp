@@ -33,7 +33,6 @@ AnalogKeyPad keypad;
 SimpleTimer timer;
 
 //global vars
-int seekSpeed;
 int localKey = 0;
 int rssiLeftRaw;
 int rssiRightRaw;
@@ -69,7 +68,7 @@ int menuRefreshLcd = 1;
 int trackLoopCounter = 0;
 int trackLockCounter = 0;
 int statsMode = 0;
-int doSeek = 5;  // start in seek mode
+int doSeek = 0;  // start in seek mode
 int doSeekTmp;
 int switchVideo1 = 0;
 int switchVideo2 = 0;
@@ -186,7 +185,7 @@ void setup() {
 	EEPROM_readAnything(EPPROM_HIGHRIGHT, highRight);
 	EEPROM_readAnything(EPPROM_CHANNEL, channel);
 	EEPROM_readAnything(EPPROM_BAND, band);
-	EEPROM_readAnything(EPPROM_SPEED, trackerSpeed);	 
+	EEPROM_readAnything(EPPROM_SPEED, trackerSpeed);			
 	EEPROM_readAnything(EPPROM_CENTERHOLD, centerHold);
 	EEPROM_readAnything(EPPROM_VOLTAGEALARM, voltagealarm);	
 	EEPROM_readAnything(EPPROM_SERVOCENTERL, servocenterl);
@@ -365,7 +364,7 @@ void track(){
 
 						//if diffference large enough - then swap.
 						//to be determined if the difference var would benifit from a wider value.
-						if(raw_avrssiDiff > 2){  //run the switching code. 
+						if(raw_avrssiDiff > 1){  //run the switching code as > 1%
 								if(rssiMid > rssiTop){  //set signal to front antenna
 										digitalWrite(PIN_AVSWITCH1, HIGH);
 										digitalWrite(PIN_AVSWITCH2, LOW);
@@ -381,11 +380,11 @@ void track(){
 										switchVideo2 = 0;
 										avSource=2;
 										lcd.setCursor(10,1);
-										lcd.print("RX2");						
+										lcd.print("RX2");	
 								}						
 						}	
-						
-				}
+					}
+					
 	
 				//tracking diff check
 				int raw_rssiDiff = rssiLeft > rssiRight ? rssiLeft - rssiRight : rssiRight - rssiLeft;
@@ -405,8 +404,12 @@ void track(){
 				//default value for a lock is 50.  To make the tracker more 'hot'
 				//reduce the value.
 				if(trackLockCounter == 0){
-
-					if (rssiDiff <= centerHold) {
+					if(rssiMid < 10 && rssiTop < 10){  //seem to have no rf?
+						servo.writeMicroseconds(getServoCenter());
+						lcd.setCursor(15,1);
+						lcd.print("#");						
+						trackLockCounter = TRACKER_LOCKCOUNTER;
+					}else if (rssiDiff <= centerHold) {
 						servo.writeMicroseconds(getServoCenter());
 						lcd.setCursor(15,1);
 						lcd.print("^");		
@@ -910,7 +913,7 @@ void menu(){
 								menuSelectArrow();
 								menuSetCenterHold();
 							}								
-							break;							
+							break;									
 					case MENU_ADVANCED_KALMAN:
 							menuWrite(STR_MENU_ADVANCED_KALMAN);
 							if(localKey == BTN_DOWN){
@@ -1437,6 +1440,7 @@ void menuSetSpeed(){
 				
 		}		
 }
+
 
 
 void menuSetCenterHold(){
@@ -1999,13 +2003,13 @@ void eppromInit(){
 		EEPROM_writeAnything(EPPROM_FORMAT, 1);
 		EEPROM_writeAnything(EPPROM_CHANNEL, 0);
 		EEPROM_writeAnything(EPPROM_BAND, 0);
-		EEPROM_writeAnything(EPPROM_SPEED, 10);
+		EEPROM_writeAnything(EPPROM_SPEED, 15);
 		EEPROM_writeAnything(EPPROM_KALMAN, 150);
 		EEPROM_writeAnything(EPPROM_VOLTAGEALARM, 11.2);
 		EEPROM_writeAnything(EPPROM_SERVOCENTERL, 1480);
 		EEPROM_writeAnything(EPPROM_SERVOCENTERR, 1480);	
 		EEPROM_writeAnything(EPPROM_DIRECTION, 0);
-		EEPROM_writeAnything(EPPROM_CENTERHOLD, 10);
+		EEPROM_writeAnything(EPPROM_CENTERHOLD, 5);
 		
 		EEPROM_writeAnything(EPPROM_LOWLEFT, 0);
 		EEPROM_writeAnything(EPPROM_LOWRIGHT, 0);
@@ -2017,6 +2021,7 @@ void eppromInit(){
 		EEPROM_writeAnything(EPPROM_HIGHMID, 0);
 		EEPROM_writeAnything(EPPROM_HIGHTOP, 0);			
 		EEPROM_writeAnything(EPPROM_KALMANAV, 100);		
+
 
 		lcd.clear();
 
