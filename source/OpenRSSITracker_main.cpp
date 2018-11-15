@@ -70,11 +70,11 @@ int trackLockCounter = 0;
 int statsMode = 0;
 int doSeek = 0;  // start in seek mode
 int doSeekTmp;
-int switchVideo1 = 0;
-int switchVideo2 = 0;
+//int switchVideo1 = 0;
+//int switchVideo2 = 0;
 int avSource=1;
 int isLegacyDiversity=0;
-
+int avSwitch=0;
 
 
 double kalman_q= 0.05;    // 0.05 do not tamper with this value unless you are looking for adventure ;-)
@@ -362,28 +362,33 @@ void track(){
 					
 						int raw_avrssiDiff = rssiTop > rssiMid ? rssiTop- rssiMid : rssiMid - rssiTop;
 
-						//if diffference large enough - then swap.
-						//to be determined if the difference var would benifit from a wider value.
-						if(raw_avrssiDiff > 1){  //run the switching code as > 1%
-								if(rssiMid > rssiTop){  //set signal to front antenna
-										digitalWrite(PIN_AVSWITCH1, HIGH);
-										digitalWrite(PIN_AVSWITCH2, LOW);
-										switchVideo1 = 0;	
-										avSource=1;
-										lcd.setCursor(10,1);
-										lcd.print("RX1");	
-										
-								} 	
-								if(rssiTop > rssiMid){ //set signal to top antenna
-										digitalWrite(PIN_AVSWITCH1, LOW);
-										digitalWrite(PIN_AVSWITCH2, HIGH);
-										switchVideo2 = 0;
-										avSource=2;
-										lcd.setCursor(10,1);
-										lcd.print("RX2");	
-								}						
-						}	
-					}
+								
+								//if(avSwitch == 2){ //counter to stop switching too rapidly
+													//disabled as kalman filter slows it down
+									
+									if(rssiMid > rssiTop){  //set signal to front antenna
+											digitalWrite(PIN_AVSWITCH1, HIGH);
+											digitalWrite(PIN_AVSWITCH2, LOW);
+											//switchVideo1 = 0;	
+											avSource=1;
+											lcd.setCursor(10,1);
+											lcd.print("RX1");	
+											
+									} 	
+									if(rssiTop > rssiMid){ //set signal to top antenna
+											digitalWrite(PIN_AVSWITCH1, LOW);
+											digitalWrite(PIN_AVSWITCH2, HIGH);
+											//switchVideo2 = 0;
+											avSource=2;
+											lcd.setCursor(10,1);
+											lcd.print("RX2");	
+									}		
+									avSwitch=0;
+									
+								//}
+								//avSwitch++;
+						
+						}
 					
 	
 				//tracking diff check
@@ -396,8 +401,9 @@ void track(){
 				//servo speed is directly related to the 'difference'.
 				//by using the speed, we create a simple 'acceleration' to the tracker - net result - low wobble.
 				servoSpeed = abs(rssiDiff);
-				servoSpeed = servoSpeed + trackerSpeed; //user speed offset
-				
+
+				servoSpeed = (servoSpeed * 2 ) + trackerSpeed; //we bump this up in code to keep speed high enough
+
 				
 				//this lock simply stops the tracker moving too much.
 				//once we have a 'centerHold' we pause tracking for X loops.
@@ -448,7 +454,7 @@ void track(){
 				}
 	
 				trackLoopCounter++;
-				if(trackLoopCounter == 2500){
+				if(trackLoopCounter == 100){
 					trackLoopCounter = 0; //redisplay stats.
 				}
 				
